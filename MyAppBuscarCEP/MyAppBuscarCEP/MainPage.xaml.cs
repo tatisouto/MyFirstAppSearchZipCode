@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MyAppBuscarCEP.Clients;
+using MyAppBuscarCEP.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -17,32 +19,20 @@ namespace MyAppBuscarCEP
         public MainPage()
         {
             InitializeComponent();
+
+            BindingContext = new BuscaCepViewModel();
         }
 
         private async void BtnBuscar_Clicked(object sender, EventArgs e)
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(txtCep.Text))
-                    throw new InvalidOperationException("Digite CEP");
+                var result = await ViaCepHttpClient.Current.BuscarCep(((BuscaCepViewModel)BindingContext).CEP);
 
-
-                using (var client = new HttpClient())
+                if (string.IsNullOrWhiteSpace(result.cep))
                 {
-                    using (var response = await client.GetAsync($"http://viacep.com.br/ws/{txtCep.Text}/json/"))
-                    {
-                        if (!response.IsSuccessStatusCode)
-                            throw new InvalidOperationException("Algo de errado aconteceu.");
-
-                        var result = await response.Content.ReadAsStringAsync();
-
-                        if (!string.IsNullOrWhiteSpace(result))
-                        {
-                            await DisplayAlert("Resultado", result, "OK");
-                        }
-
-                    }
-                };
+                    await DisplayAlert("eita", result.cep, "OK");
+                }
 
             }
             catch (Exception ex)

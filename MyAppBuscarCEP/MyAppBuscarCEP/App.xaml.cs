@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MyAppBuscarCEP.Pages;
+using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -10,7 +11,7 @@ namespace MyAppBuscarCEP
         {
             InitializeComponent();
 
-            MainPage = new MainPage();
+            MainPage = new BuscaCepPage();
         }
 
         protected override void OnStart()
